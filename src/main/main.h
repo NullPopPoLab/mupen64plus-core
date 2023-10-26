@@ -50,6 +50,7 @@ extern void* g_mem_base;
 extern struct device g_dev;
 
 extern m64p_media_loader g_media_loader;
+extern char g_rom_filename[1024];
 
 extern m64p_frame_callback g_FrameCallback;
 

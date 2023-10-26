@@ -177,6 +177,9 @@ EXPORT m64p_error CALL CoreDoCommand(m64p_command Command, int ParamInt, void *P
     {
         case M64CMD_NOP:
             return M64ERR_SUCCESS;
+        case M64CMD_ROM_FILENAME:
+            strncpy(g_rom_filename, (const unsigned char *) ParamPtr, ParamInt);
+            return M64ERR_SUCCESS;
         case M64CMD_ROM_OPEN:
             if (g_EmulatorRunning || l_DiskOpen || l_ROMOpen)
                 return M64ERR_INVALID_STATE;

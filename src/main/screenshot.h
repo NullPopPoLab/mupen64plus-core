@@ -24,5 +24,6 @@
 
 void ScreenshotRomOpen(void);
 void TakeScreenshot(int iFrameNumber);
+void TakeScreenshotToFile(char *filename, int iFrameNumber);
 
 #endif

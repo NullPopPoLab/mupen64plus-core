@@ -114,6 +114,7 @@ uint32_t g_start_address = UINT32_C(0xa4000040);
 struct device g_dev;
 
 m64p_media_loader g_media_loader;
+char g_rom_filename[1024] = "";
 
 int g_gs_vi_counter = 0;
 
@@ -168,6 +169,18 @@ static char *get_save_filename(void)
 
     if (format == 0) {
         snprintf(filename, 256, "%s", ROM_PARAMS.headername);
+    } else if(format == 1000) {
+      char *bn;
+      char *tmpbn;
+      tmpbn = strdup(g_rom_filename);
+      if(tmpbn == NULL) {
+	snprintf(filename, 256, "unknown-%.8s", ROM_SETTINGS.MD5);
+      } else {
+	bn = basename(tmpbn);
+	snprintf(filename, 256, "%s", bn);
+	free(tmpbn);
+	return filename; // no sanitize
+      }
     } else /* if (format == 1) */ {
         if (strstr(ROM_SETTINGS.goodname, "(unknown rom)") == NULL) {
             snprintf(filename, 256, "%.32s-%.8s", ROM_SETTINGS.goodname, ROM_SETTINGS.MD5);
@@ -1953,7 +1966,7 @@ m64p_error main_run(void)
 #endif
 
     /* Startup message on the OSD */
-    osd_new_message(OSD_MIDDLE_CENTER, "Mupen64Plus Started...");
+    //osd_new_message(OSD_MIDDLE_CENTER, "Mupen64Plus Started...");
 
     g_EmulatorRunning = 1;
     StateChanged(M64CORE_EMU_STATE, M64EMU_RUNNING);

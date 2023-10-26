@@ -587,7 +587,8 @@ void romdatabase_open(void)
 
     int counter, value, lineno;
     unsigned char index;
-    const char *pathname = ConfigGetSharedDataFilepath("mupen64plus.ini");
+    //const char *pathname = ConfigGetSharedDataFilepath("mupen64plus.ini");
+    const char *pathname = "/usr/share/mupen64plus/mupen64plus.ini";
 
     if(g_romdatabase.have_database)
         return;

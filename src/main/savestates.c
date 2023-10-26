@@ -86,6 +86,12 @@ static char *savestates_generate_path(savestates_type type)
     }
     else /* Use the selected savestate slot */
     {
+        char* prefix = ROM_SETTINGS.goodname;
+        if(g_rom_filename[0] != '\0') {
+        char *x = strrchr(g_rom_filename, '/');
+        if(x != NULL) prefix = x;
+    }
+
         char *filepath;
         size_t size = 0;
 
@@ -93,7 +99,7 @@ static char *savestates_generate_path(savestates_type type)
         {
             case savestates_type_m64p:
                 /* check if old file path exists, if it does then use that */
-                filepath = formatstr("%s%s.st%d", get_savestatepath(), ROM_SETTINGS.goodname, slot);
+                filepath = formatstr("%s.st%d", prefix, slot);
                 if (get_file_size(filepath, &size) != file_ok || size == 0)
                 {
                     /* else use new path */
@@ -101,10 +107,10 @@ static char *savestates_generate_path(savestates_type type)
                 }
                 break;
             case savestates_type_pj64_zip:
-                filepath = formatstr("%s%s.pj%d.zip", get_savestatepath(), ROM_PARAMS.headername, slot);
+                filepath = formatstr("%s.pj%d.zip", prefix, slot);
                 break;
             case savestates_type_pj64_unc:
-                filepath = formatstr("%s%s.pj%d", get_savestatepath(), ROM_PARAMS.headername, slot);
+                filepath = formatstr("%s.pj%d", prefix, slot);
                 break;
             default:
                 filepath = NULL;
@@ -2145,6 +2151,7 @@ int savestates_save(void)
     char *filepath;
     int ret = 0;
     const struct device* dev = &g_dev;
+    char ScreenshotFileName[256];
 
     /* Can only save PJ64 savestates on VI / COMPARE interrupt.
        Otherwise try again in a little while. */
@@ -2168,8 +2175,12 @@ int savestates_save(void)
             case savestates_type_pj64_unc: ret = savestates_save_pj64_unc(dev, filepath); break;
             default: ret = 0; break;
         }
+        strncpy(ScreenshotFileName, filepath, 251);
+        strncat(ScreenshotFileName, ".png", 4);
         free(filepath);
     }
+
+    TakeScreenshotToFile(ScreenshotFileName, 0);
 
     // deliver callback to indicate completion of state saving operation
     StateChanged(M64CORE_STATE_SAVECOMPLETE, ret);

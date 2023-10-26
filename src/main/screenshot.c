@@ -224,6 +224,12 @@ void TakeScreenshot(int iFrameNumber)
     if (filename == NULL)
         return;
 
+    TakeScreenshotToFile(filename, iFrameNumber);
+    free(filename);
+}
+
+void TakeScreenshotToFile(char* filename, int iFrameNumber)
+{
     // get the width and height
     int width = 640;
     int height = 480;
@@ -233,7 +239,6 @@ void TakeScreenshot(int iFrameNumber)
     unsigned char *pucFrame = (unsigned char *) malloc(width * height * 3);
     if (pucFrame == NULL)
     {
-        free(filename);
         return;
     }
 
@@ -244,7 +249,6 @@ void TakeScreenshot(int iFrameNumber)
     SaveRGBBufferToFile(filename, pucFrame, width, height, width * 3);
     // free the memory
     free(pucFrame);
-    free(filename);
     // print message -- this allows developers to capture frames and use them in the regression test
     main_message(M64MSG_INFO, OSD_BOTTOM_LEFT, "Captured screenshot for frame %i.", iFrameNumber);
 }
